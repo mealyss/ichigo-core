@@ -1,9 +1,7 @@
 all: rainy
 
 rainy: clean
-	gcc src/*.c src/format/*.c src/render/*.c -o rainy
-	clear
-	./rainy 
+	gcc -Wall -pthread src/*.c src/format/*.c src/platform/*.c src/platform/unix/*.c src/render/*.c -o rainy
 
 clean:
 	rm -f rainy

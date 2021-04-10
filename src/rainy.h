@@ -1,6 +1,10 @@
 #ifndef RN_RAINY
 #define RN_RAINY
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
@@ -32,4 +36,8 @@ extern void         rn_render(const RN_Scene* scene, RN_Buffer* render_buffer);
 extern bool         rn_save_bmp(const RN_Buffer* buffer, const char* file_name);
 
 
+#ifdef __cplusplus
+} //extern "C"
 #endif
+
+#endif // RN_RAINY
