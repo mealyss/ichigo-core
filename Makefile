@@ -1,7 +1,7 @@
-all: rainy
+all: ichigo
 
-rainy: clean
-	gcc -Wall -pthread src/*.c src/format/*.c src/platform/*.c src/platform/unix/*.c src/render/*.c -o rainy
+ichigo: clean
+	gcc  -Wall -O3 -pthread  src/*.c src/format/*.c src/platform/*.c src/platform/unix/*.c src/render/*.c  src/parallel/*.c -o ichigo -lm
 
 clean:
-	rm -f rainy
+	rm -f ichigo

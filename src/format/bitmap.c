@@ -1,5 +1,6 @@
 #include "../rnpch.h"
 #include "../core/pixel_buffer.h"
+#include "../core/assert.h"
 
 #define PLANES 1
 #define COMPRESSION 0
@@ -42,7 +43,6 @@ typedef struct
 
 bool bmp_save_buffer(const Buffer* buffer, const char* fname)
 {
-    printf("%d, %d\n", buffer->widht, buffer->height);
     int res = 1;
     FILE* fp = fopen(fname, "wb");
 
@@ -75,6 +75,8 @@ bool bmp_save_buffer(const Buffer* buffer, const char* fname)
         return false;
 
     free(pbmp);
+
+    RN_LOGVVV("Saved as \"%s\" %dx%dpx\n", fname, buffer->widht, buffer->height);
     return res;
 }
 

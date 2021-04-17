@@ -6,4 +6,5 @@ typedef struct Vector3f
     float x, y, z;
 } Vector3f;
 
+
 #endif

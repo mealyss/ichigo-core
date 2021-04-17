@@ -27,6 +27,7 @@ void thread_init(Thread* self, void* (*task)(void* arg), void* data)
 
 void thread_destroy(Thread* thread)
 {
+    thread_terminate(thread);
     free(thread);
 }
 
