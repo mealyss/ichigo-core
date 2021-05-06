@@ -16,6 +16,11 @@ _MM_ALIGN16 struct vec4f_stored
     float z, y, x, w;
 } vec4f_stored;
 
+typedef struct mat4x4f
+{
+    vec4f_stored m[4];
+} mat4x4f;
+
 static vec4f_stored SIGNMASK; 
 
 #define vec4f_stored(x, y, z)\
@@ -163,3 +168,59 @@ static inline vec4f refract(vec4f normal, vec4f incident, float eta)
         return vsub(fmul(incident, eta), fmul(normal, eta * dotNI + fsqrt(k)));
 }
 
+static inline void mmmul(const mat4x4f* Am, const mat4x4f* Bm, mat4x4f* Cm)
+{
+    const float* A = (float*)&(Am->m);
+    const float* B = (float*)&(Bm->m);
+    float* C = (float*)&(Cm->m);
+
+    vec4f row1 = _mm_load_ps(&B[0]);
+    vec4f row2 = _mm_load_ps(&B[4]);
+    vec4f row3 = _mm_load_ps(&B[8]);
+    vec4f row4 = _mm_load_ps(&B[12]);
+
+    for(size_t i = 0; i < 4; ++i)
+    {
+        vec4f brod1 = _mm_set1_ps(A[4*i + 0]);
+        vec4f brod2 = _mm_set1_ps(A[4*i + 1]);
+        vec4f brod3 = _mm_set1_ps(A[4*i + 2]);
+        vec4f brod4 = _mm_set1_ps(A[4*i + 3]);
+
+        vec4f row = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(brod1, row1),
+                        _mm_mul_ps(brod2, row2)),
+                    _mm_add_ps(
+                        _mm_mul_ps(brod3, row3),
+                        _mm_mul_ps(brod4, row4)));
+
+        _mm_store_ps(&C[4*i], row);
+    }
+
+}
+
+static inline vec4f mmul(const mat4x4f* m, const vec4f v)
+{
+    vec4f_stored A;
+    vec4f_store(v, &A);
+    const float* B = (float*)&(m->m);
+
+    vec4f row1 = _mm_load_ps(&B[0]);
+    vec4f row2 = _mm_load_ps(&B[4]);
+    vec4f row3 = _mm_load_ps(&B[8]);
+    vec4f row4 = _mm_load_ps(&B[12]);
+
+    vec4f brod1 = _mm_set1_ps(A.x);
+    vec4f brod2 = _mm_set1_ps(A.y);
+    vec4f brod3 = _mm_set1_ps(A.z);
+    vec4f brod4 = _mm_set1_ps(A.w);
+
+    return _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(brod1, row1),
+                        _mm_mul_ps(brod2, row2)),
+                    _mm_add_ps(
+                        _mm_mul_ps(brod3, row3),
+                        _mm_mul_ps(brod4, row4)));
+
+}
