@@ -5,7 +5,7 @@
 #include "format/bitmap.h"
 #include "core/assert.h"
 
-#include "render/pathtrace.h"
+#include "render/render.h"
 #include "parallel/render_pool.h"
 #include "platform/sleep.h"
 
@@ -49,15 +49,14 @@ void ichigo_render(const ICH_Scene *scene, ICH_Buffer *buffer)
     RN_CORE_ASSERT(buffer, "Null buffer passed");
 
     Buffer* buf = (Buffer*) buffer;
-    Color24* pixel = buf->pixels;
 
-    pathtrace_setup(scene, buffer);
+    naive_pathtrace_setup(scene, buffer);
 
     for(size_t y = 0; y < buf->height; ++y)
     {
         for(size_t x = 0; x < buf->widht; ++x)
         {
-            pathtrace_compute(x, y, pixel++);
+            naive_pathtrace_compute(x, y);
         }
     }
 
@@ -84,7 +83,7 @@ void ichigo_parallel_render_tiled_async(const ICH_Scene* scene, ICH_Buffer* rend
 {
     RN_CORE_ASSERT(scene && render_buffer && workers && mode && tile_size, "NULL argument was passed");
 
-    pathtrace_setup(scene, render_buffer);
+    naive_pathtrace_setup(scene, render_buffer);
 
     RenderPool* rpool = (RenderPool*) workers;
     Buffer*     buf = (Buffer*) render_buffer;
@@ -104,7 +103,7 @@ void ichigo_parallel_render_tiled_async(const ICH_Scene* scene, ICH_Buffer* rend
             for(size_t i = 0; i < rpool->workers_count && i < cols * rows; ++i)
             {
                 rpool->workers_tasks[i].buffer = buf;
-                rpool->workers_tasks[i].render_func = pathtrace_compute;
+                rpool->workers_tasks[i].render_func = naive_pathtrace_compute;
                 rpool->workers_tasks[i].render_data.tiled.tile_size = tile_size;
                 rpool->workers_tasks[i].render_data.tiled.tile_matrix = tile_matrix;
                 rpool->workers_tasks[i].render_data.tiled.tile_current = i + 1;

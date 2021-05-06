@@ -5,7 +5,7 @@
 
 typedef struct Color24
 {
-    uint8_t r, g, b;
+    uint8_t b, g, r;
 } Color24;
 
 

@@ -8,7 +8,7 @@
 typedef struct RenderTask 
 {
     Buffer* buffer;
-    void (*render_func)(uint32_t pixel_x, uint32_t pixel_y, Color24* out_color);
+    void (*render_func)(uint32_t pixel_x, uint32_t pixel_y);
     void (*callback_func)(void* render_pool);
     union 
     {

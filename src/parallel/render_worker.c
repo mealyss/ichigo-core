@@ -51,8 +51,7 @@ static void* render_worker_func(RenderWorker* self)
     static unsigned tsize;
     static uint8_t* tiles;
     static Buffer* buf;
-    static Color24* pixels;
-    static void (*compute)(uint32_t x, uint32_t y, Color24* res);
+    static void (*compute)(uint32_t x, uint32_t y);
     static void (*callback)(void*);
 
     uint16_t ncur;
@@ -71,7 +70,6 @@ _sleep:
 
     self->is_working = true;
     buf = self->render_task->buffer;
-    pixels = buf->pixels;
     tsize = self->render_task->render_data.tiled.tile_size;
     tiles = self->render_task->render_data.tiled.tile_matrix;
     cols = buf->widht  / tsize  + buf->widht % tsize;
@@ -93,7 +91,7 @@ _next_tile:
     {
         for(size_t x = x0; x < x1; ++x)
         {
-            compute(x, y, &pixels[y * buf->widht + x]);
+            compute(x, y);
         }
     }
             
